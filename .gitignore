@@ -1,0 +1,50 @@
+node_modules/
+dist/
+build/
+out/
+.turbo/
+coverage/
+
+# Build output — manuals are generated, never committed
+manuals/**/output/
+
+# Official deliveries: the exact PDF and Word file a client received.
+#
+# The BYTES stay out of git — one delivery of one manual is ~77MB and git
+# stores binaries whole per version, so a year of deliveries would be several
+# gigabytes nobody ever reads with `git log`.
+#
+# What IS committed is the PROOF: each delivered row in a manual's change log
+# carries the commit it was built from and the SHA-256 of every file handed
+# over. That is a hundred bytes, it survives forever, and it lets anyone verify
+# whether a given PDF is the one the client actually received.
+#
+# The README is tracked on purpose. A gitignored directory is invisible, and an
+# invisible directory holding the only copy of a delivered document is one
+# tidy-up away from gone.
+deliveries/*
+!deliveries/README.md
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+*.log
+
+# Agent tooling state — auto-generated, contains machine-local absolute paths
+.atl/
+
+# Product login for `manualforge capture`. NEVER commit this.
+# The committed template is .env.capture.example — copy it, do not rename it.
+.env.capture
+
+# Claude Code local state
+.claude/settings.local.json
+
+# Local junction/symlink to skills/ for Claude Code discovery.
+# The canonical skills live in skills/ — never commit the link.
+.claude/skills
+
+# Prompts assembled by `manualforge new`. Generated per run, and they carry
+# machine-local paths — the manual they start is what gets committed, not these.
+.manualforge/

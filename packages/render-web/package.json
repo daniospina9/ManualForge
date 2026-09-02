@@ -1,0 +1,17 @@
+{
+  "name": "@manualforge/render-web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@manualforge/blocks": "workspace:*",
+    "@manualforge/tokens": "workspace:*",
+    "pagedjs": "^0.4.3"
+  }
+}

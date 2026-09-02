@@ -1,0 +1,17 @@
+# Normalize line endings so diffs stay clean across platforms.
+* text=auto eol=lf
+
+# Never touch binary assets.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+
+# Generated — collapse in diffs and exclude from language stats.
+pnpm-lock.yaml linguist-generated=true -diff
+manuals/**/knowledge/*.json linguist-generated=true

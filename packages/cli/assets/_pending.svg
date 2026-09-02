@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img"
+     aria-label="Imagen pendiente de entrega">
+  <!--
+    The placeholder the PIPELINE ships, for a manual that does not keep one of
+    its own yet. A manual folder created from scratch has no `_pending.svg`, and
+    on its first build every slot is pending — so without this file the build
+    stopped before it reached the renderer.
+
+    Deliberately BRAND-NEUTRAL: the pipeline serves every brand and cannot know
+    which one is being built here. A manual that wants the placeholder in its own
+    palette keeps its own copy at `assets/figures/_pending.svg`, which wins.
+
+    Geometry and wording follow the manual copies: an SVG so it stays sharp from
+    a 24pt icon cell to a full-width figure and reads as text in git; frame and
+    glyph carry it at icon size, the wording only at figure size; it names no
+    element, because every slot sits under the thing it depicts.
+  -->
+  <rect x="1.5" y="1.5" width="317" height="197" rx="6"
+        fill="#F4F7FA" stroke="#8FA3B8" stroke-width="1.6" stroke-dasharray="7 5"/>
+  <g fill="none" stroke="#8FA3B8" stroke-width="2.4" stroke-linejoin="round">
+    <rect x="112" y="52" width="96" height="70" rx="4"/>
+    <path d="M112 104l24-22 18 16 14-12 40 30"/>
+  </g>
+  <circle cx="186" cy="71" r="7" fill="#8FA3B8"/>
+  <text x="160" y="158" text-anchor="middle" fill="#4A5B70"
+        font-family="Segoe UI, Helvetica, Arial, sans-serif"
+        font-size="15" font-weight="600" letter-spacing="0.8">IMAGEN PENDIENTE</text>
+</svg>
