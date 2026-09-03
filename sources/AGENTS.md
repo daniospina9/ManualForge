@@ -24,9 +24,17 @@ Everything read from a source repo lands in that manual's `knowledge/` folder as
 data, with a file-and-line provenance for each fact. Content is then written
 against that data.
 
-Nobody authors a manual by reading source code directly. That is how a manual
-ends up asserting things nobody can trace, and how it silently rots when the
-code moves.
+**The rule is provenance, not the map.** Nobody authors a manual from what they
+remember of the source: that is how a manual ends up asserting things nobody can
+trace, and how it silently rots when the code moves. A fact you cannot point at
+is a guess.
+
+`extract` is one way to produce those citations, and it exists only for the
+product shapes `EXTRACTORS` lists. When there is no reader for a product, the
+facts are gathered and cited by hand into the manual's `ESTADO.md` and its
+sections — same discipline, same `file.ts:27`, no map. Manuals have been
+delivered that way. What is never acceptable is an uncited claim about which
+deployment sees what.
 
 ## Skills that govern work here
 

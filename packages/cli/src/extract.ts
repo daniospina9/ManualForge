@@ -4,6 +4,7 @@ import { parse as parseYaml } from "yaml";
 import { z } from "zod";
 import {
   capabilityMatrix,
+  extractorProblem,
   findTenantReferences,
   parseTenantConfig,
   reconcileAxisValues,
@@ -16,7 +17,7 @@ import { soleAxis } from "./axis.ts";
 /**
  * `extract` — read a source product and write the module map.
  *
- * The map is the only beacon between product code and manual content: content is
+ * The map is the only bridge between product code and manual content: content is
  * written against the map, never against source read ad hoc. Everything here
  * carries the file and line it came from, because a fact nobody can point at is
  * a guess, and a guess about which deployment sees what is the one defect a
@@ -33,6 +34,17 @@ const registrySchema = z.object({
       .object({
         name: z.string().min(1),
         path: z.string().min(1),
+        // Which reader may parse this product. Declared since the second source
+        // and, until the dispatch below, read by nobody — so every extraction
+        // ran the one parser there was, whatever the entry said.
+        //
+        // OPTIONAL here on purpose, though a source without it cannot be
+        // extracted. A schema error for a missing field is a JSON dump about a
+        // type; `extractorProblem` answers the question the reader actually has
+        // — which shapes can be read, and that authoring content by hand is the
+        // supported alternative rather than a workaround. One function decides
+        // what "no reader" means, and it is not this schema.
+        framework: z.string().min(1).optional(),
         extract: z
           .object({
             // OPTIONAL, because a product can be genuinely multi-tenant without
@@ -306,6 +318,14 @@ export function sourceRootFor(repoRoot: string, manualId: string): ResolvedSourc
         `files to read.`,
     );
   }
+
+  // Asked before the product is touched, and before `tenantConfigs`: whether a
+  // reader exists at all is a more fundamental question than whether the entry
+  // points somewhere useful, and running the wrong parser is worse than running
+  // none. Nothing below this line is reached for a shape this pipeline cannot
+  // read, so no partial map can be written.
+  const unreadable = extractorProblem(sourceId, entry.framework);
+  if (unreadable !== null) throw new Error(unreadable);
 
   const sourceRoot = join(repoRoot, entry.path);
   if (!existsSync(sourceRoot)) {

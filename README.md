@@ -49,6 +49,22 @@ own. It is yours to write, and a fresh clone has none: the entry is recorded
 after a product is surveyed, not before, so the wizard asks for a path instead
 of a pick until one exists.
 
+**Extraction is optional.** `extract` reads a product's own code into cited
+facts so content can be written against them faster, and it is written per
+product shape — `EXTRACTORS` in `packages/extract` lists the ones a reader
+exists for, today `react-vite-ts` alone. A source declaring anything else is
+refused by name rather than parsed by the wrong reader, because a wrong fact
+about which deployment sees what is the one defect a reader of the finished
+manual cannot detect.
+
+That refusal is a detour, not a dead end. `build` never reads the module map: a
+manual is assembled from content, and content is written against facts cited
+from the source by file and line, whether a parser produced those citations or a
+person did. Three of the four manuals this engine has shipped were authored with
+no map at all, one of them delivered to a client. Adding a reader for your own
+stack is additive — a finder returning the same types, registered in
+`EXTRACTORS` — and `packages/extract/AGENTS.md` describes the seam.
+
 `manuals/<id>/` holds one folder per manual. `manuals/demo/` ships as a worked
 example — two deployments of a fictional product, conditioned at both the
 section and the row level — so `build` has something to render before you have

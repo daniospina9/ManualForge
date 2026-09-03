@@ -18,10 +18,13 @@ Those assumptions are in the code, not in configuration:
 | Sources are `.ts/.tsx/.js/.jsx` | `packages/cli/src/extract.ts` — `SCANNED` |
 
 **A second product does not "configure" its way in.** If it resolves tenancy by
-subdomain, by a database table, or not at all, none of the above fires and the
-extractor reports a product with one tenant, or none. That failure is silent:
-the map parses, the build succeeds, and the manual asserts that every deployment
-sees everything.
+subdomain, by a database table, or not at all, none of the above fires.
+
+That failure used to be silent — the map parsed, the build succeeded, and the
+manual asserted that every deployment sees everything. It is not silent any
+more: `extractorProblem` refuses any source whose `framework` has no reader,
+before the product is opened. Running the wrong parser is worse than running
+none, so the refusal comes first and nothing partial is written.
 
 ## The map names its axis; this package's parsing does not assume one
 
@@ -40,16 +43,27 @@ The FINDER stays per product. `findTenantReferences` knows `atlas`'s
 shape (`ROUTE_GATE` is a literal `allowedProjects` regex); a second product's
 finder is a **new function returning the same type**, not a widening of that one.
 
-## The seam that was anticipated and not built
+## The seam, now live
 
-`sources/registry.yaml` declares `framework: react-vite-ts` per source. **No
-code reads that field.** It is the intended discriminator for choosing an
-extractor and it is currently inert.
+`sources/registry.yaml` declares `framework` per source, and `framework.ts`
+reads it. `EXTRACTORS` lists the shapes a reader exists for; anything else is
+refused by name, before the product is opened.
 
-Adding a second product is therefore additive, not a restructure: dispatch on
-`framework`, keep this implementation as the `react-vite-ts` case, and write a
-new one beside it. Nothing downstream of `module-map.json` changes — `core`, the
-renderers and the content layer never learn what a product is.
+Adding a second product is additive, not a restructure: write a finder returning
+the same types, and register its framework in `EXTRACTORS`. Nothing downstream
+of `module-map.json` changes — `core`, the renderers and the content layer never
+learn what a product is.
+
+## Extraction is an accelerator, not the pipeline
+
+`build` never reads `module-map.json`. A manual is assembled from content, and
+content is written against facts cited from the source by file and line —
+whether a map produced those citations or a person did.
+
+Three of the four manuals this engine has shipped were authored with no map at
+all, one of them delivered to a client. So a refusal here is a detour, never a
+dead end, and `extractorProblem` says so in the message rather than leaving the
+reader to conclude the tool is not for their product.
 
 Do not generalise this code speculatively before a second product exists. One
 concrete second shape teaches more about the right abstraction than any amount
