@@ -1,0 +1,37 @@
+# A worked example, small enough to read in one sitting.
+#
+# Two deployments of one fictional product. `north` receives a module `south`
+# never sees, which is the whole point of the pipeline: content authored once,
+# one document per deployment, and no reader able to tell the other exists.
+#
+# Nothing here is captured from a real product. Delete this folder once you have
+# a manual of your own — the engine does not depend on it.
+
+version: 1
+
+manual:
+  id: demo
+  title: Manual de operador
+  # Printed on the cover and the running header. `brand` defaults to this,
+  # upper-cased, when it is not declared.
+  product: Demo
+  contentVersion: 0.1.0
+
+# Exactly one axis. The model is generic — role, language, deployment stage —
+# but a manual is assembled along a single one, and `soleAxis` enforces it.
+axes:
+  tenant:
+    label: Despliegue
+    values:
+      - { id: north, name: Norte }
+      - { id: south, name: Sur }
+
+# One document per entry. Each target must declare a value for every axis.
+targets:
+  - { tenant: north }
+  - { tenant: south }
+
+output:
+  dir: output
+  # `{tenant}` is the axis token, expanded by the axis's own name.
+  filename: "manual-operador-{tenant}-v{contentVersion}.pdf"

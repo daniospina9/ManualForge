@@ -1,0 +1,26 @@
+# Sections load in FILENAME order, which is why this file is prefixed `01-`.
+# The prefix decides sequence, never the printed number: numbering is derived
+# from the tree after conditioning, so a section hidden from one deployment does
+# not leave a hole in that document's numbering.
+#
+# Writing a literal number in a `title` is a hard error, for the same reason.
+
+id: introduccion
+title: Introducción
+
+children:
+  - id: introduccion.proposito
+    type: prose
+    props:
+      text: >-
+        Este manual describe la operación del producto Demo. Es un ejemplo
+        mínimo y completo: dos despliegues, una sección condicionada y nada
+        más. Sirve para comprobar que la instalación funciona, y para leer
+        cómo se escribe el contenido antes de escribir el propio.
+
+  - id: introduccion.alcance
+    type: callout
+    props:
+      text: >-
+        Cada despliegue recibe su propio documento. Un lector no puede
+        deducir, desde el manual que tiene en la mano, que existen otros.

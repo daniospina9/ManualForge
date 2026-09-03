@@ -44,12 +44,15 @@ no delivered documents.
 | `sources/AGENTS.md` | How a source product repository is onboarded and read |
 | `manuals/AGENTS.md` | How a manual is laid out and authored |
 
-Content lives in two directories that ship here as documentation only.
 `sources/registry.yaml` points the extractor at the product repositories you
-own; `manuals/<id>/` holds one folder per manual. Both are yours to create —
-**the CLI requires them and exits with an error until they exist.** Every
-command, the wizard included, operates on a manual; there is no bundled example
-yet.
+own. It is yours to write, and a fresh clone has none: the entry is recorded
+after a product is surveyed, not before, so the wizard asks for a path instead
+of a pick until one exists.
+
+`manuals/<id>/` holds one folder per manual. `manuals/demo/` ships as a worked
+example — two deployments of a fictional product, conditioned at both the
+section and the row level — so `build` has something to render before you have
+written anything. Delete it once you have a manual of your own.
 
 ## Getting started
 
@@ -62,15 +65,27 @@ pnpm test
 The test suite is the documentation that runs: 690 tests over the block
 contract, conditioning, numbering, delivery state and every renderer.
 
+Then build the bundled example, which needs no configuration:
+
 ```bash
-# Start a manual, or pick up one already under way
+node packages/cli/src/main.ts build demo
+```
+
+```
+tenant=north     2 section(s), 4 numbered node(s), 3 page(s) -> manual-operador-north-…pdf
+tenant=south     2 section(s), 3 numbered node(s), 3 page(s) -> manual-operador-south-…pdf
+```
+
+Two documents from one source of content, and Sur's is a node shorter because a
+section and a table row name Norte and only Norte. That difference is the point
+of the whole pipeline. Both land in `manuals/demo/output/`.
+
+```bash
+# Start a manual of your own, or pick up one already under way
 pnpm manuales
 
-# Build one tenant's manual
+# Build one deployment
 node packages/cli/src/main.ts build <manual-id> --tenant <tenant>
-
-# Every configured tenant
-node packages/cli/src/main.ts build <manual-id>
 ```
 
 `pnpm manuales` is an interactive wizard. It asks only what the repository

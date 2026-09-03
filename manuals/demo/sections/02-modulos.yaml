@@ -1,0 +1,64 @@
+# The file that earns the pipeline. It conditions at both levels.
+#
+# ELEMENT level — `modulos.panel.tabla` is one shared table, and a single row
+# inside it names a deployment. Sur's document renders the same table with one
+# row fewer. This is the case a packed document cannot serve and a document per
+# deployment duplicates: divergence INSIDE a shared screen.
+#
+# SECTION level — `modulos.mapa` names a deployment on the section itself, so it
+# is absent from Sur's manual. Not greyed out, not marked "not available in your
+# plan": absent, and unnumbered, so Sur's numbering closes over the gap.
+#
+# A selector omitting an axis is unconstrained on it. `["all"]` says the same
+# thing explicitly.
+
+id: modulos
+title: Módulos
+
+children:
+  - id: modulos.panel
+    title: Panel de control
+    children:
+      - id: modulos.panel.texto
+        type: prose
+        props:
+          text: >-
+            El panel reúne el estado de la operación en una sola pantalla.
+            Ambos despliegues lo abren igual; lo que cambia es qué indicadores
+            trae.
+
+      - id: modulos.panel.tabla
+        type: data-table
+        props:
+          labelHeader: Indicador
+          descriptionHeader: Qué informa
+          rows:
+            - id: modulos.panel.tabla.abiertos
+              label: Incidentes abiertos
+              description: Cantidad sin cerrar al momento de abrir el panel.
+
+            - id: modulos.panel.tabla.recursos
+              label: Recursos disponibles
+              description: Unidades libres, por tipo.
+
+            # Only Norte contracted the map layer, so only Norte's table has
+            # the row that reports it. Sur's document does not render an empty
+            # cell — the row does not exist there.
+            - id: modulos.panel.tabla.cobertura
+              label: Cobertura del mapa
+              description: Porcentaje de recursos con posición reciente.
+              when:
+                tenant: [north]
+
+  - id: modulos.mapa
+    title: Capa de mapa
+    when:
+      tenant: [north]
+    children:
+      - id: modulos.mapa.texto
+        type: prose
+        props:
+          text: >-
+            La capa de mapa muestra la posición de los recursos en tiempo
+            real. Solo el despliegue Norte la tiene contratada, así que esta
+            sección entera no se ensambla en el manual de Sur.
