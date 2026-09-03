@@ -75,10 +75,10 @@ exist.
 ## Repository map
 
 ```
-sources/            NOT SHIPPED HERE — registry of source product repos
-                    (read-only inputs). Create it to onboard a product
-manuals/            NOT SHIPPED HERE — one folder per manual: knowledge,
-                    content, assets
+sources/            AGENTS.md only — write `registry.yaml` beside it to
+                    onboard a product repo (read-only input)
+manuals/            AGENTS.md only — one folder per manual once authored:
+                    knowledge, content, assets
 packages/
   blocks/           Block type definitions + AST types  ← THE CONTRACT
   core/             Parser, assembler, conditioning, numbering, validation

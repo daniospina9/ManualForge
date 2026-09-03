@@ -24,9 +24,10 @@ sentence written once stays correct in every document that includes it.
 
 ## What is in this repository
 
-The **engine** — the block contract, the assembler, the design tokens and the
-renderers. It carries no manual content: no source-product registry, no authored
-sections, no captured figures, no delivered documents.
+The **engine** — the block contract, the assembler, the design tokens, the
+renderers, and the agent instructions that drive them. It carries no manual
+content: no source-product registry, no authored sections, no captured figures,
+no delivered documents.
 
 | Path | Purpose |
 |---|---|
@@ -40,12 +41,15 @@ sections, no captured figures, no delivered documents.
 | `packages/catalog` | Live gallery of every block, variant and tenant |
 | `packages/cli` | `manualforge` command line |
 | `skills/` | Agent Skills used to operate the pipeline |
+| `sources/AGENTS.md` | How a source product repository is onboarded and read |
+| `manuals/AGENTS.md` | How a manual is laid out and authored |
 
-Content lives in two directories at the repository root that this repository
-does not ship: `sources/registry.yaml`, which points the extractor at the
-product repositories you own, and `manuals/<id>/`, one folder per manual. The
-CLI degrades gracefully when they are absent — the wizard scaffolds a manual,
-and the registry is yours to write.
+Content lives in two directories that ship here as documentation only.
+`sources/registry.yaml` points the extractor at the product repositories you
+own; `manuals/<id>/` holds one folder per manual. Both are yours to create —
+**the CLI requires them and exits with an error until they exist.** Every
+command, the wizard included, operates on a manual; there is no bundled example
+yet.
 
 ## Getting started
 
