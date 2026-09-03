@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -14,6 +14,7 @@ import {
   launchPlan,
   normaliseSourcePath,
   readRegistrySources,
+  repoRootProblem,
   validateManualId,
   type ManualState,
   type WizardAnswers,
@@ -206,6 +207,47 @@ describe("validateManualId", () => {
     const root = repo();
     mkdirSync(join(root, "manuals", "taken"));
     expect(validateManualId("taken", root)).toBe("manuals/taken/ ya existe");
+  });
+});
+
+describe("repoRootProblem", () => {
+  /** A bare clone of the engine: the catalogue, and nothing authored yet. */
+  function engine(): string {
+    const root = mkdtempSync(join(tmpdir(), "wizard-"));
+    mkdirSync(join(root, "packages", "blocks", "src", "catalog"), { recursive: true });
+    return root;
+  }
+
+  it("accepts a clone with no registry, because the first run is the one that has none", () => {
+    expect(repoRootProblem(engine())).toBeNull();
+  });
+
+  it("accepts a clone with no manuals/ either — both directories are authored, not shipped", () => {
+    const root = engine();
+    expect(existsSync(join(root, "manuals"))).toBe(false);
+    expect(repoRootProblem(root)).toBeNull();
+  });
+
+  it("rejects a directory that is not the engine", () => {
+    expect(repoRootProblem(mkdtempSync(join(tmpdir(), "wizard-")))).not.toBeNull();
+  });
+
+  it("names the marker it looked for, so the reader can check it themselves", () => {
+    expect(repoRootProblem(mkdtempSync(join(tmpdir(), "wizard-")))).toMatch(
+      /packages\/blocks\/src\/catalog/,
+    );
+  });
+
+  // The bug this replaced: the wizard refused whenever `sources/registry.yaml`
+  // was absent and told the reader to move — "Corré esto desde la raíz del
+  // repositorio" — to somebody already standing in it. On a fresh clone the
+  // file is absent by design, because the registry entry is written after the
+  // survey and not before, so the advice was false to the one person who most
+  // needed it. The message states what is missing; it never orders a move and
+  // never mentions the registry.
+  it("states what is missing instead of ordering a move, which was the old lie", () => {
+    const message = repoRootProblem(mkdtempSync(join(tmpdir(), "wizard-")));
+    expect(message).not.toMatch(/corré|correlo|desde la raíz|registry/i);
   });
 });
 

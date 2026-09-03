@@ -151,6 +151,28 @@ export function validateManualId(id: string, repoRoot: string): string | null {
   return null;
 }
 
+/**
+ * Why this directory cannot host the wizard, or `null` if it can.
+ *
+ * The marker is the block catalogue, not `sources/registry.yaml`. A clone that
+ * has never been used has no registry and no `manuals/`: both are authored, and
+ * `readRegistrySources` returns `[]` for exactly that reason. Step 1 already
+ * reads an empty registry as "a product this repository does not know yet" and
+ * asks for a path instead of a pick, so the first run needs no file at all.
+ *
+ * Requiring the registry here refused that run and blamed the working directory
+ * for it — advice that was false to the only reader who ever saw it, since they
+ * were already standing in the root. What the wizard actually needs is the
+ * engine: no catalogue, no block types, and nothing downstream can assemble.
+ */
+export function repoRootProblem(repoRoot: string): string | null {
+  const catalog = join(repoRoot, "packages", "blocks", "src", "catalog");
+  if (!existsSync(catalog)) {
+    return `${repoRoot} no es un repositorio ManualForge: falta \`packages/blocks/src/catalog\`.`;
+  }
+  return null;
+}
+
 /** Sources the registry already knows, so a mapped product is picked, not retyped. */
 export function readRegistrySources(repoRoot: string): RegistrySource[] {
   const file = join(repoRoot, "sources", "registry.yaml");
@@ -677,11 +699,9 @@ async function ask<T>(
 
 /** Steps 1 to 3, then the assembled prompt. Returns an exit code. */
 export async function runWizard(repoRoot: string): Promise<number> {
-  if (!existsSync(join(repoRoot, "sources", "registry.yaml"))) {
-    console.error(
-      `error: no se encontró sources/registry.yaml en ${repoRoot}.\n` +
-        `Corré esto desde la raíz del repositorio.`,
-    );
+  const problem = repoRootProblem(repoRoot);
+  if (problem !== null) {
+    console.error(`error: ${problem}`);
     return 1;
   }
 
